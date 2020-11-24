@@ -1,9 +1,32 @@
-/*
- * tm1638.c
- *
- *  Created on: Nov 19, 2020
- *      Author: philip
- */
+/**
+  ******************************************************************************
+  * @file           : tm1683.c
+  * @brief          : TM1683 LED and Key functions
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; Copyright (c) 2020 Philip Stubbs.
+  * All rights reserved.</center></h2>
+  *
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
+  *
+  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  * POSSIBILITY OF SUCH DAMAGE.
+  *
+  ******************************************************************************
+  */
 
 #include <main.h>
 #include <tm1638.h>
@@ -130,12 +153,11 @@ void tm_set_in()
 }
 
 
-//void tm_shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val)
+
 void tm_shiftOut(uint8_t val)
 {
-  uint8_t i;
-
-  for (i = 0; i < 8; i++)  {
+  for (uint8_t i = 0; i < 8; i++)
+  {
     HAL_GPIO_WritePin(TM_IO_GPIO_Port, TM_IO_Pin, !!(val & (1 << i)));
 
     HAL_GPIO_WritePin(TM_CLK_GPIO_Port, TM_CLK_Pin, GPIO_PIN_SET);
@@ -147,32 +169,33 @@ void tm_shiftOut(uint8_t val)
 
 uint8_t tm_shiftIn()
 {
-	uint8_t value = 0;
+  uint8_t value = 0;
 
-	for(uint8_t i = 0; i < 8; ++i) {
-		value |= HAL_GPIO_ReadPin(TM_IO_GPIO_Port, TM_IO_Pin) << i;
+  for(uint8_t i = 0; i < 8; ++i)
+  {
+    value |= HAL_GPIO_ReadPin(TM_IO_GPIO_Port, TM_IO_Pin) << i;
 
-	    HAL_GPIO_WritePin(TM_CLK_GPIO_Port, TM_CLK_Pin, GPIO_PIN_SET);
-	    __NOP();
-	    HAL_GPIO_WritePin(TM_CLK_GPIO_Port, TM_CLK_Pin, GPIO_PIN_RESET);
-	    __NOP();
-	}
+    HAL_GPIO_WritePin(TM_CLK_GPIO_Port, TM_CLK_Pin, GPIO_PIN_SET);
+    __NOP();
+    HAL_GPIO_WritePin(TM_CLK_GPIO_Port, TM_CLK_Pin, GPIO_PIN_RESET);
+    __NOP();
+  }
 
-    return value;
+  return value;
 }
 
 void tm_send_command(uint8_t data)
 {
-	TM_CS_SELECT;
-	tm_shiftOut(data);
-	TM_CS_DESELECT;
+  TM_CS_SELECT;
+  tm_shiftOut(data);
+  TM_CS_DESELECT;
 }
 
 void tm_reset()
 {
   tm_send_command(TM_WRITE_INC);
   TM_CS_SELECT;
-  for(int i=0; i<16; i++)
+  for(uint16_t i=0; i<16; i++)
   {
 	tm_shiftOut(0);
   }
@@ -216,11 +239,15 @@ void tm_displayASCIIwDot(uint8_t position, uint8_t ascii) {
 void tm_displayText(const char *text) {
   char c, pos;
   pos = 0;
-  while ((c = (*text++)) && pos < TM_DISPLAY_SIZE)  {
-    if (*text == '.' && c != '.') {
+  while ((c = (*text++)) && pos < TM_DISPLAY_SIZE)
+  {
+    if (*text == '.' && c != '.')
+    {
       tm_displayASCIIwDot(pos++, c);
       text++;
-    } else {
+    }
+    else
+    {
       tm_displayASCII(pos++, c);
     }
   }
@@ -243,7 +270,8 @@ void tm_setLEDs(uint8_t ledvalues)
     if ((ledvalues & (1 << LEDposition)) != 0)
     {
       led = 1;
-    } else
+    }
+    else
     {
     	led = 0;
     }
@@ -261,16 +289,10 @@ uint8_t tm_readButtons()
   tm_set_in();
   for (uint8_t i = 0; i < 4; i++)
   {
-
-//    if  (_HIGH_FREQ == false)
-//        v = shiftIn(_DATA_IO, _CLOCK_IO, LSBFIRST) << i;
-//    else
-//        v = TM_common.HighFreqshiftin(_DATA_IO, _CLOCK_IO, LSBFIRST) << i;
 	v = tm_shiftIn() << i;
     buttons |= v;
   }
 
-  // pinMode(_DATA_IO, OUTPUT);
   tm_set_out();
   TM_CS_DESELECT;
   return buttons;
