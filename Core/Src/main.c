@@ -102,46 +102,46 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-	  HAL_Delay(500);
-	  tm_reset();
+    {
+      HAL_Delay(500);
+      tm_reset();
 
-	  for(uint8_t i=0; i<8; i++)
-	  {
-		  if(i % 2)
-		  {
-		    tm_displayASCII(i, (int)('A') + i);
-		  }
-		  else
-		  {
-			tm_displayASCIIwDot(i, (int)('A') + i);
-		  }
-	  }
+      for(uint8_t i=0; i<8; i++)
+        {
+          if(i % 2)
+            {
+              tm_displayASCII(i, (int)('A') + i);
+            }
+          else
+            {
+              tm_displayASCIIwDot(i, (int)('A') + i);
+            }
+        }
 
-	  HAL_Delay(500);
-	  tm_reset();
+      HAL_Delay(500);
+      tm_reset();
 
-	  for(int i=0; i<8; i++)
-	  {
-		  tm_displayASCII(i, (int)('1') + i);
-	  }
+      for(int i=0; i<8; i++)
+        {
+          tm_displayASCII(i, (int)('1') + i);
+        }
 
-	  HAL_Delay(500);
-	  tm_reset();
+      HAL_Delay(500);
+      tm_reset();
 
-	  tm_displayText("stuphi0.1");
+      tm_displayText("stuphi0.1");
 
-	  HAL_Delay(500);
-	  tm_reset();
+      HAL_Delay(500);
+      tm_reset();
 
-	  for(uint16_t i = 0; i<=255; i++)
-	  {
-        tm_setLEDs(i);
-        HAL_Delay(5);
-	  }
+      for(uint16_t i = 0; i<=255; i++)
+        {
+          tm_setLEDs(i);
+          HAL_Delay(5);
+        }
 
-	  HAL_Delay(500);
-	  tm_reset();
+      HAL_Delay(500);
+      tm_reset();
 
       tm_setLEDs(85);
       HAL_Delay(100);
@@ -153,21 +153,21 @@ int main(void)
       HAL_Delay(100);
 
 
-	  HAL_Delay(500);
-	  tm_reset();
+      HAL_Delay(500);
+      tm_reset();
 
-	  uint8_t buttons = 0;
-	  for(uint8_t i = 0; i < 100; i++)
-	  {
-		  buttons = tm_readButtons();
-		  tm_setLEDs(buttons);
-		  HAL_Delay(100);
-	  }
+      uint8_t buttons = 0;
+      for(uint8_t i = 0; i < 100; i++)
+        {
+          buttons = tm_readButtons();
+          tm_setLEDs(buttons);
+          HAL_Delay(100);
+        }
 
-    /* USER CODE END WHILE */
+      /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
+      /* USER CODE BEGIN 3 */
+    }
   /* USER CODE END 3 */
 }
 
