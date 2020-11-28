@@ -91,11 +91,15 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  TM1638 tm(TM_CS_GPIO_Port, TM_CS_Pin,
+            TM_CLK_GPIO_Port, TM_CLK_Pin,
+            TM_IO_GPIO_Port, TM_IO_Pin);
+
   TM_CS_DESELECT;
 
-  tm_send_command(TM_ACTIVATE);
+  tm.send_command(TM_ACTIVATE);
 
-  tm_reset();
+  tm.reset();
 
   /* USER CODE END 2 */
 
@@ -104,63 +108,63 @@ int main(void)
   while (1)
     {
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
       for(uint8_t i=0; i<8; i++)
         {
           if(i % 2)
             {
-              tm_displayASCII(i, (int)('A') + i);
+              tm.displayASCII(i, (int)('A') + i);
             }
           else
             {
-              tm_displayASCIIwDot(i, (int)('A') + i);
+              tm.displayASCIIwDot(i, (int)('A') + i);
             }
         }
 
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
       for(int i=0; i<8; i++)
         {
-          tm_displayASCII(i, (int)('1') + i);
+          tm.displayASCII(i, (int)('1') + i);
         }
 
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
-      tm_displayText("stuphi0.1");
+      tm.displayText("stuphi0.1");
 
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
       for(uint16_t i = 0; i<=255; i++)
         {
-          tm_setLEDs(i);
+          tm.setLEDs(i);
           HAL_Delay(5);
         }
 
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
-      tm_setLEDs(85);
+      tm.setLEDs(85);
       HAL_Delay(100);
-      tm_setLEDs(170);
+      tm.setLEDs(170);
       HAL_Delay(100);
-      tm_setLEDs(85);
+      tm.setLEDs(85);
       HAL_Delay(100);
-      tm_setLEDs(170);
+      tm.setLEDs(170);
       HAL_Delay(100);
 
 
       HAL_Delay(500);
-      tm_reset();
+      tm.reset();
 
       uint8_t buttons = 0;
       for(uint8_t i = 0; i < 100; i++)
         {
-          buttons = tm_readButtons();
-          tm_setLEDs(buttons);
+          buttons = tm.readButtons();
+          tm.setLEDs(buttons);
           HAL_Delay(100);
         }
 
