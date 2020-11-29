@@ -91,15 +91,18 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  /* Setup my object for the display module */
   TM1638 tm(TM_CS_GPIO_Port, TM_CS_Pin,
             TM_CLK_GPIO_Port, TM_CLK_Pin,
             TM_IO_GPIO_Port, TM_IO_Pin);
 
-  TM_CS_DESELECT;
-
   tm.send_command(TM_ACTIVATE);
 
   tm.reset();
+
+  tm.brightness(3);
+
+  tm.set();
 
   /* USER CODE END 2 */
 

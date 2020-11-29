@@ -49,9 +49,6 @@
 #define TM_RED_LED 0x02			// Model 3
 #define TM_OFF_LED 0x00
 
-#define TM_CS_SELECT HAL_GPIO_WritePin(TM_CS_GPIO_Port, TM_CS_Pin, GPIO_PIN_RESET)
-#define TM_CS_DESELECT HAL_GPIO_WritePin(TM_CS_GPIO_Port, TM_CS_Pin, GPIO_PIN_SET)
-
 
 class TM1638
 {
@@ -68,6 +65,7 @@ private:
   void set_in();
   void shift_out(uint8_t val);
   uint8_t shift_in();
+  void select(bool sel);
 
 public:
   TM1638(GPIO_TypeDef* tm_stb_port, uint16_t tm_stb_pin,

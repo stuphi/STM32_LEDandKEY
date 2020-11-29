@@ -44,7 +44,11 @@ TM1638::TM1638(GPIO_TypeDef* tm_stb_port, uint16_t tm_stb_pin,
   _TM_DIO_Pin  = tm_dio_pin;
 }
 
-
+void TM1638::select(bool sel)
+{
+  HAL_GPIO_WritePin(_TM_STB_Port, _TM_STB_Pin,
+                    sel ? GPIO_PIN_RESET : GPIO_PIN_SET );
+}
 
 void TM1638::set_out()
 {
@@ -101,29 +105,29 @@ uint8_t TM1638::shift_in()
 
 void TM1638::send_command(uint8_t data)
 {
-  TM_CS_SELECT;
+  select(true);
   shift_out(data);
-  TM_CS_DESELECT;
+  select(false);
 }
 
 void TM1638::reset()
 {
   send_command(TM_WRITE_INC);
-  TM_CS_SELECT;
+  select(true);
   for(uint16_t i=0; i<16; i++)
     {
       shift_out(0);
     }
-  TM_CS_DESELECT;
+  select(false);
 }
 
 void TM1638::set()
 {
   send_command(TM_WRITE_LOC);
-  TM_CS_SELECT;
+  select(true);
   shift_out(0xC2);
   shift_out(255);
-  TM_CS_DESELECT;
+  select(false);
 }
 
 void TM1638::brightness(uint8_t brightness)
@@ -136,10 +140,10 @@ void TM1638::brightness(uint8_t brightness)
 void TM1638::display7Seg(uint8_t position, uint8_t value)
 {
   send_command(TM_WRITE_LOC);
-  TM_CS_SELECT;
+  select(true);
   shift_out(TM_SEG_ADR + (position << 1));
   shift_out(value);
-  TM_CS_DESELECT;
+  select(false);
 }
 
 void TM1638::displayASCII(uint8_t position, uint8_t ascii)
@@ -173,10 +177,10 @@ void TM1638::displayText(const char *text)
 void TM1638::setLED(uint8_t position, uint8_t value)
 {
   send_command(TM_WRITE_LOC);
-  TM_CS_SELECT;
+  select(true);
   shift_out(TM_LEDS_ADR + (position << 1));
   shift_out(value);
-  TM_CS_DESELECT;
+  select(false);
 }
 
 void TM1638::setLEDs(uint8_t ledvalues)
@@ -201,7 +205,7 @@ uint8_t TM1638::readButtons()
   uint8_t buttons = 0;
   uint8_t v = 0;
 
-  TM_CS_SELECT;
+  select(true);
   shift_out(TM_BUTTONS_MODE);
   set_in();
   for (uint8_t i = 0; i < 4; i++)
@@ -211,6 +215,6 @@ uint8_t TM1638::readButtons()
     }
 
   set_out();
-  TM_CS_DESELECT;
+  select(false);
   return buttons;
 }
